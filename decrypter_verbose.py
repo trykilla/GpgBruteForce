@@ -48,7 +48,7 @@ def attempt_decryption(passphrase, password_found, encrypted_data, start_time):
     if password_found.value:
         return  
     decrypted_data = gpg.decrypt(encrypted_data, passphrase=passphrase)
-    
+    #print(f"Trying: {passphrase}")
     if decrypted_data.ok:
         password_found.value = 1 
         print(f"Pass is OK: {passphrase}, if program is not exiting, wait or just press Ctrl + C")
@@ -105,13 +105,12 @@ if __name__ == "__main__":
             chunks = [args[i:i + chunk_size]
                       for i in range(0, len(args), chunk_size)] # Divide the list in chunks and assign them to a process (We create a list of lists)
             
-            with Pool(processes=num_processes) as pool:
+            with Pool(processes=num_processes) as pool: # Create the pool of processes
                 print(f"Starting the crack with {num_processes} processes")
                 print(f"for length {password_length} with file '{archivo_gpg}'")
-                sleep(1)
                 
                 start_time = time()  
                 
-                pool.map(map_attempt_decryption, [(chunk, start_time) for chunk in chunks])
+                pool.map(map_attempt_decryption, [(chunk, start_time) for chunk in chunks]) # Map functiono to the pool of processes
                 pool.close()
                 pool.join()
